@@ -1,0 +1,22 @@
+{
+  "short_name": "sveltedoc",
+  "name": "sveltedoc",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "logo_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "logo_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "background_color": "#FF3E00",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#FF3E00",
+  "description": "A document application in svelte"
+}
