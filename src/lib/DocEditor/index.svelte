@@ -4,6 +4,7 @@
 
 	export let autoSave;
 	export let content;
+	export let disable;
 
 	let quill = null;
 	let container = null;
@@ -15,6 +16,12 @@
 
 		if (content) {
 			quill.setContents(JSON.parse(content));
+		} else {
+			quill.setText('');
+		}
+
+		if (disable) {
+			quill.disable(disable);
 		}
 
 		quill.on('text-change', function () {
@@ -25,11 +32,14 @@
 	});
 </script>
 
-<div class="editor-container p-2 w-full">
+<div class="editor-container p-2 w-full {disable && 'disable'}">
 	<div bind:this={container} />
 </div>
 
 <style>
+	.disable:hover {
+		cursor: not-allowed;
+	}
 	.editor-container {
 		width: 800px;
 		height: 70vh;

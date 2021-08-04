@@ -6,7 +6,8 @@ export const doc = writable({
 	id: null,
 	title: null,
 	html: null,
-	text: null
+	text: null,
+	profile: {}
 });
 
 export const docs = writable([]);

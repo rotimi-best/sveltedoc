@@ -18,13 +18,34 @@
 	import PrimaryButton from '$lib/PrimaryButton/index.svelte';
 	import { supabase } from '../../functions/supabase';
 	import { user } from '../../store/user';
-	import { docs } from '../../store/docs';
+	import { profile } from '../../store/profile';
 
 	export let profileId;
 
 	let loading = false;
 	let currentProfile = {};
 	let isOwner = false;
+	let docs = [];
+
+	async function getUserDocs() {
+		const { data, error } = await supabase
+			.from('document')
+			.select(
+				`
+			id,
+			title,
+			text,
+			profile:profile_id ( id, avatar_url, username )
+		`
+			)
+			.eq('profile_id', profileId);
+		if (error) {
+			alert(error.message);
+			return;
+		}
+		docs = data;
+		console.log(`docs`, docs);
+	}
 
 	async function getProfile() {
 		loading = true;
@@ -37,6 +58,7 @@
 			.select(`*`)
 			.eq('id', profileId)
 			.single();
+		console.log(`profileData`, profileData);
 
 		if (error && !profileData && status === 406) {
 			// User wasn't found, create profile
@@ -46,11 +68,14 @@
 			// Profile created, go to profile page
 			if (!error && data) {
 				currentProfile = data;
+				await getUserDocs();
 			}
 		} else if (profileData) {
 			// Profile exists, go to profile page
 			currentProfile = profileData;
+			await getUserDocs();
 		}
+		console.log(`currentProfile`, currentProfile);
 
 		loading = false;
 	}
@@ -85,22 +110,22 @@
 	onMount(() => {
 		// if (!$user.isLoggedIn && !$user.fetchingUser) {
 		// 	goto('/');
-
 		// 	user.update((_user) => ({
 		// 		..._user,
 		// 		openAuthModal: true
 		// 	}));
-
 		// 	return;
 		// }
+		// if ($user.currentSession) {
+		// 	getProfile();
+		// }
+	});
 
+	$: isOwner = $profile.id === profileId;
+	$: {
 		if ($user.currentSession) {
 			getProfile();
 		}
-	});
-
-	$: {
-		isOwner = $user.currentSession ? $user.currentSession.user.id === profileId : false;
 	}
 </script>
 
@@ -134,8 +159,13 @@
 
 		<div class="flex-grow" />
 		<div class="flex-grow flex flex-wrap mx-3">
-			{#each $docs as doc}
-				<DocBox title={doc.title} />
+			{#each docs as doc}
+				<DocBox
+					title={doc.title}
+					snapshotContent={doc.text}
+					profile={doc.profile || {}}
+					id={doc.id}
+				/>
 			{:else}
 				<Box>
 					<div>

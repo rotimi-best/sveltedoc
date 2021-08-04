@@ -72,6 +72,11 @@
 </nav>
 
 <style>
+	nav {
+		position: sticky;
+		top: 0;
+		background: #fff;
+	}
 	ul {
 		margin: 0 auto;
 		padding: 0;

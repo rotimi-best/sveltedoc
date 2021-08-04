@@ -10,7 +10,7 @@
 
 <script>
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { BarLoader, Chasing } from 'svelte-loading-spinners';
 	import DocEditor from '$lib/DocEditor/index.svelte';
 	import Box from '$lib/Box/index.svelte';
@@ -21,6 +21,7 @@
 	export let docId;
 
 	let timeoutId;
+	let isOwner = false;
 
 	function autoSave({ title = $doc.title, html = $doc.html, text = $doc.text }) {
 		if (!title) {
@@ -57,34 +58,47 @@
 		autoSave({ title: $doc.title });
 	}
 
-	onMount(async () => {
-		// Create a new document
-		if (docId === 'new') {
-			const { data, error } = await supabase.from('document').insert({ profile_id: $profile.id });
+	async function createDoc() {
+		const { data, error } = await supabase.from('document').insert({ profile_id: $profile.id });
 
-			if (error || !Array.isArray(data)) {
-				alert(error.message || `Couldn't create document`);
-				return;
-			}
-
-			goto(`/doc/${data[0].id}`);
-		} else if (docId) {
-			const { data, error } = await supabase.from('document').select(`*`).eq('id', docId).single();
-
-			if (error || !data) {
-				alert(error.message || `Couldn't create document`);
-				return;
-			}
-
-			doc.update((_doc) => ({
-				..._doc,
-				isLoading: false,
-				...data
-			}));
+		if (error || !Array.isArray(data)) {
+			alert(error.message || `Couldn't create document`);
+			return;
 		}
+
+		goto(`/doc/${data[0].id}`);
+	}
+
+	async function getDocument() {
+		const { data, error } = await supabase.from('document').select(`*`).eq('id', docId).single();
+		if (error || !data) {
+			alert(error.message || `Couldn't create document`);
+			return;
+		}
+
+		// gotten document
+		doc.update((_doc) => ({
+			..._doc,
+			isLoading: false,
+			...data
+		}));
+	}
+
+	onDestroy(() => {
+		$doc.isLoading = true;
 	});
 
-	// $: autoSave({ title: $doc.title });
+	$: {
+		isOwner = $doc.profile ? $doc.profile_id === $profile.id : false;
+	}
+
+	$: {
+		if (docId === 'new') {
+			createDoc();
+		} else if (docId) {
+			getDocument();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -102,7 +116,7 @@
 				type="text"
 				value={$doc.title}
 				on:input={onTitleChange}
-				class="text-xl p-2 w-11/12 rounded-md focus:border-yellow-600 outline-none"
+				class="text-xl p-2 w-11/12 rounded-md hover:border focus:border-grey-300 outline-none"
 			/>
 			{#if $doc.isSaving}
 				<div class="flex items-center flex-col">
@@ -112,7 +126,7 @@
 			{/if}
 		</div>
 
-		<DocEditor {autoSave} content={$doc.html} />
+		<DocEditor {autoSave} content={$doc.html} disable={!isOwner} />
 	{/if}
 </section>
 
