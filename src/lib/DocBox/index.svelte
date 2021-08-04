@@ -23,7 +23,7 @@
 			<a class="text-blue-700" href="/profile/{profile.id}">
 				{profile.username}
 			</a>
-			<div class="w-full flex justify-between items-center">
+			<!-- <div class="w-full flex justify-between items-center">
 				<Vote value={1}>
 					<slot:component slot="icon">
 						<ArrowUp16 />
@@ -35,7 +35,7 @@
 						<AddComment24 />
 					</slot:component>
 				</Vote>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </a>

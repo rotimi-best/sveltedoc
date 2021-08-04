@@ -44,13 +44,11 @@
 			return;
 		}
 		docs = data;
-		console.log(`docs`, docs);
 	}
 
 	async function getProfile() {
 		loading = true;
 		// Get user profile
-		const { id } = $user.currentSession.user;
 
 		// Check if user has profile
 		let { data: profileData, error, status } = await supabase
@@ -58,9 +56,9 @@
 			.select(`*`)
 			.eq('id', profileId)
 			.single();
-		console.log(`profileData`, profileData);
 
-		if (error && !profileData && status === 406) {
+		if (error && !profileData && status === 406 && $user.currentSession) {
+			const { id } = $user.currentSession.user;
 			// User wasn't found, create profile
 
 			const { data, error } = await supabase.from('profile').insert([{ user_id: id }]);
@@ -123,9 +121,7 @@
 
 	$: isOwner = $profile.id === profileId;
 	$: {
-		if ($user.currentSession) {
-			getProfile();
-		}
+		getProfile();
 	}
 </script>
 

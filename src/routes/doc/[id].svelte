@@ -70,7 +70,19 @@
 	}
 
 	async function getDocument() {
-		const { data, error } = await supabase.from('document').select(`*`).eq('id', docId).single();
+		const { data, error } = await supabase
+			.from('document')
+			.select(
+				`
+			id,
+			title,
+			html,
+			text,
+			profile:profile_id ( id, username )
+		`
+			)
+			.eq('id', docId)
+			.single();
 		if (error || !data) {
 			alert(error.message || `Couldn't create document`);
 			return;
@@ -89,7 +101,7 @@
 	});
 
 	$: {
-		isOwner = $doc.profile ? $doc.profile_id === $profile.id : false;
+		isOwner = $doc.profile ? $doc.profile.id === $profile.id : false;
 	}
 
 	$: {
@@ -105,7 +117,7 @@
 	<title>{$doc.title || 'New Document'}</title>
 </svelte:head>
 
-<section class="w-11/12 flex items-center justify-center flex-col m-2">
+<section class="root flex justify-center flex-col m-2">
 	{#if $doc.isLoading}
 		<Box>
 			<Chasing size="60" color="#ff3e00" unit="px" duration="1s" />
@@ -125,13 +137,19 @@
 				</div>
 			{/if}
 		</div>
-
+		<h6 class="ml-2 text-gray-500 italic text-sm">
+			Written by
+			<a class="text-blue-700" href="/profile/{$doc.profile.id}">
+				{$doc.profile.username}
+			</a>
+		</h6>
 		<DocEditor {autoSave} content={$doc.html} disable={!isOwner} />
 	{/if}
 </section>
 
 <style>
-	.title {
+	.root {
 		width: 800px;
+		margin: 0 auto;
 	}
 </style>
