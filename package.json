@@ -3,14 +3,13 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",
-    "build": "svelte-kit build && svelte-kit adapt",
+    "build": "svelte-kit build",
     "preview": "svelte-kit preview",
     "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "devDependencies": {
     "@sveltejs/adapter-netlify": "^1.0.0-next.9",
-    "@sveltejs/adapter-static": "^1.0.0-next.0",
     "@sveltejs/kit": "next",
     "carbon-icons-svelte": "^10.36.0",
     "eslint": "^7.22.0",
