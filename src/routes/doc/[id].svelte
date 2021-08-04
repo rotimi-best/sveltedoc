@@ -128,6 +128,7 @@
 				type="text"
 				value={$doc.title}
 				on:input={onTitleChange}
+				disabled={!isOwner}
 				class="text-xl p-2 w-11/12 rounded-md hover:border focus:border-grey-300 outline-none"
 			/>
 			{#if $doc.isSaving}
