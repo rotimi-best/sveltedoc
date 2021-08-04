@@ -137,7 +137,7 @@
 				</div>
 			{/if}
 		</div>
-		<h6 class="ml-2 text-gray-500 italic text-sm">
+		<h6 class="ml-2 text-gray-500 text-sm">
 			Written by
 			<a class="text-blue-700" href="/profile/{$doc.profile.id}">
 				{$doc.profile.username}

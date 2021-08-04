@@ -1,7 +1,7 @@
 <script>
-	import ArrowUp16 from 'carbon-icons-svelte/lib/ArrowUp16';
-	import AddComment24 from 'carbon-icons-svelte/lib/AddComment24';
-	import Vote from '../Vote/index.svelte';
+	// import ArrowUp16 from 'carbon-icons-svelte/lib/ArrowUp16';
+	// import AddComment24 from 'carbon-icons-svelte/lib/AddComment24';
+	// import Vote from '../Vote/index.svelte';
 
 	export let id;
 	export let title;
@@ -12,7 +12,7 @@
 <a class="root" href="/doc/{id}">
 	<div class="border border-grey-300 rounded-md m-3 hover:border-yellow-600">
 		<div class="doc-box-snippet flex items-center p-3">
-			<p class="text-xs">
+			<p class="text-xs text-gray-600">
 				{snapshotContent || 'No content added'}
 			</p>
 		</div>
@@ -20,7 +20,7 @@
 			<h3 class="overflow-ellipsis" {title}>
 				{title}
 			</h3>
-			<a class="text-blue-700" href="/profile/{profile.id}">
+			<a class="text-gray-500 underline pb-2 text-sm" href="/profile/{profile.id}">
 				{profile.username}
 			</a>
 			<!-- <div class="w-full flex justify-between items-center">
