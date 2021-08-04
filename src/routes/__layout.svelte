@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import Navigation from '$lib/Navigation/index.svelte';
 	import Authenticate from '$lib/Authenticate/index.svelte';
 	import { supabase } from '../functions/supabase';
@@ -20,6 +20,7 @@
 	}
 
 	async function setUserInStore(localStorageData) {
+		console.log(`setUserInStore $user`, $user);
 		let res = { error: null, data: null };
 		const isTokenExpired = Date.now() >= localStorageData.expiresAt * 1000;
 
@@ -29,20 +30,8 @@
 			res = await getUser(localStorageData.currentSession.access_token);
 		}
 
-		console.log(`res`, res);
 		if (res.error && !res.data) {
 			return console.error('Error getting user profile from supabase', res.error);
-		}
-
-		// Get profile
-		let profileResponse = await supabase
-			.from('profile')
-			.select(`*`)
-			.eq('user_id', res.data.id)
-			.single();
-		console.log(`profileResponse`, profileResponse);
-		if (!profileResponse.error && profileResponse.data) {
-			profile.set(profileResponse.data);
 		}
 
 		user.update((_user) => ({
@@ -56,8 +45,26 @@
 			}
 		}));
 
-		console.log(`profile`, $profile);
-		console.log(`user`, $user);
+		// Get profile
+		let profileResponse = await supabase
+			.from('profile')
+			.select(`*`)
+			.eq('user_id', res.data.id)
+			.single();
+
+		if (!profileResponse.error && profileResponse.data) {
+			profile.set(profileResponse.data);
+		} else if ($user.currentSession && !profileResponse.data) {
+			const { id } = $user.currentSession.user;
+			// User wasn't found, create profile
+
+			const { data, error } = await supabase.from('profile').insert([{ user_id: id }]);
+
+			// Profile created
+			if (!error && Array.isArray(data)) {
+				profile.set(data[0]);
+			}
+		}
 	}
 
 	onMount(() => {
@@ -67,27 +74,29 @@
 		}
 
 		$user.fetchingUser = true;
-		const supbaseToken = localStorage.getItem('supabase.auth.token');
+		setTimeout(() => {
+			console.log(`Wait a little for token to be set`);
+			const supbaseToken = localStorage.getItem('supabase.auth.token');
+			if (!supbaseToken) {
+				$user.fetchingUser = false;
+				return;
+			}
 
-		if (!supbaseToken) {
-			$user.fetchingUser = false;
-			return;
-		}
+			let localStorageData;
 
-		let localStorageData;
+			try {
+				localStorageData = JSON.parse(supbaseToken);
+			} catch (error) {
+				console.error(error);
+			}
 
-		try {
-			localStorageData = JSON.parse(supbaseToken);
-		} catch (error) {
-			console.error(error);
-		}
+			if (!localStorageData) {
+				$user.fetchingUser = false;
+				return;
+			}
 
-		if (!localStorageData) {
-			$user.fetchingUser = false;
-			return;
-		}
-
-		setUserInStore(localStorageData);
+			setUserInStore(localStorageData);
+		}, 1000);
 	});
 </script>
 
