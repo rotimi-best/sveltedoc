@@ -13,6 +13,7 @@
 	import { onDestroy } from 'svelte';
 	import { BarLoader, Chasing } from 'svelte-loading-spinners';
 	import DocEditor from '$lib/DocEditor/index.svelte';
+	import Comments from '$lib/Comments/index.svelte';
 	import Box from '$lib/Box/index.svelte';
 	import { doc } from '../../store/docs';
 	import { profile } from '../../store/profile';
@@ -102,6 +103,7 @@
 
 	$: {
 		isOwner = $doc.profile ? $doc.profile.id === $profile.id : false;
+		console.log(`isOwner`, isOwner);
 	}
 
 	$: {
@@ -117,40 +119,43 @@
 	<title>{$doc.title || 'New Document'}</title>
 </svelte:head>
 
-<section class="root flex justify-center flex-col m-2">
-	{#if $doc.isLoading}
-		<Box>
-			<Chasing size="60" color="#ff3e00" unit="px" duration="1s" />
-		</Box>
-	{:else}
-		<div class="title flex items-center justify-between">
-			<input
-				type="text"
-				value={$doc.title}
-				on:input={onTitleChange}
-				disabled={!isOwner}
-				class="text-xl p-2 w-11/12 rounded-md hover:border focus:border-grey-300 outline-none"
-			/>
-			{#if $doc.isSaving}
-				<div class="flex items-center flex-col">
-					<BarLoader size="20" color="#ff3e00" unit="px" duration="2s" />
-					<p class="ml-2 italic">Autosaving...</p>
-				</div>
-			{/if}
-		</div>
-		<h6 class="ml-2 text-gray-500 text-sm">
-			Written by
-			<a class="text-blue-700" href="/profile/{$doc.profile.id}">
-				{$doc.profile.username}
-			</a>
-		</h6>
-		<DocEditor {autoSave} content={$doc.html} disable={!isOwner} />
-	{/if}
+<section class="flex flex-col lg:flex-row justify-center mt-2">
+	<section class="root flex justify-center flex-col m-2">
+		{#if $doc.isLoading}
+			<Box>
+				<Chasing size="60" color="#ff3e00" unit="px" duration="1s" />
+			</Box>
+		{:else}
+			<div class="title flex items-center justify-between">
+				<input
+					type="text"
+					value={$doc.title}
+					on:input={onTitleChange}
+					disabled={!isOwner}
+					class="text-xl p-2 w-11/12 rounded-md hover:border focus:border-grey-300 outline-none"
+				/>
+				{#if $doc.isSaving}
+					<div class="flex items-center flex-col">
+						<BarLoader size="20" color="#ff3e00" unit="px" duration="2s" />
+						<p class="ml-2 italic">Autosaving...</p>
+					</div>
+				{/if}
+			</div>
+			<h6 class="ml-2 text-gray-500 text-sm">
+				Written by
+				<a class="text-blue-700" href="/profile/{$doc.profile.id}">
+					{$doc.profile.username}
+				</a>
+			</h6>
+			<DocEditor {autoSave} content={$doc.html} disable={!isOwner} />
+		{/if}
+	</section>
+
+	<Comments />
 </section>
 
 <style>
 	.root {
 		width: 800px;
-		margin: 0 auto;
 	}
 </style>

@@ -49,12 +49,17 @@
 	}
 
 	onMount(async () => {
-		const { data, error } = await supabase.from('document').select(`
+		const { data, error } = await supabase
+			.from('document')
+			.select(
+				`
 			id,
 			title,
 			text,
 			profile:profile_id ( id, avatar_url, username )
-		`);
+		`
+			)
+			.order('updated_at', { ascending: false });
 
 		if (error) {
 			return alert(error.message);

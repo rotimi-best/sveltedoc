@@ -19,29 +19,31 @@
 		} else {
 			quill.setText('');
 		}
-
-		if (disable) {
-			quill.disable(disable);
-		}
-
 		quill.on('text-change', function () {
 			// quill.root.innerHTML
 
 			autoSave({ html: JSON.stringify(quill.getContents()), text: quill.getText(0, 500) });
 		});
 	});
+
+	$: {
+		if (quill && quill.setText) {
+			if (disable) {
+				quill.disable(disable);
+			} else {
+				quill.enable(true);
+			}
+		}
+	}
 </script>
 
-<div class="editor-container p-2 w-full {disable && 'disable'}">
+<div class="editor-container p-2 w-full">
 	<div bind:this={container} />
 </div>
 
 <style>
-	.disable:hover {
-		cursor: not-allowed;
-	}
 	.editor-container {
-		width: 800px;
+		max-width: 800px;
 		height: 70vh;
 	}
 </style>
