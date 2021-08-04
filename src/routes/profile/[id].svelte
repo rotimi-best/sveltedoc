@@ -35,7 +35,8 @@
 			id,
 			title,
 			text,
-			profile:profile_id ( id, avatar_url, username )
+			profile:profile_id (id, avatar_url, username),
+			comments:documentcomment (count)
 		`
 			)
 			.eq('profile_id', profileId);
@@ -161,6 +162,7 @@
 					snapshotContent={doc.text}
 					profile={doc.profile || {}}
 					id={doc.id}
+					commentsCount={doc.comments[0].count}
 				/>
 			{:else}
 				<Box>

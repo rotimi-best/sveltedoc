@@ -31,7 +31,6 @@
 				id,
 				title,
 				text,
-				profile_id,
 				profile:profile_id ( id, avatar_url, username )
 			`
 				)
@@ -56,7 +55,8 @@
 			id,
 			title,
 			text,
-			profile:profile_id ( id, avatar_url, username )
+			profile:profile_id ( id, avatar_url, username ),
+			comments:documentcomment (count)
 		`
 			)
 			.order('updated_at', { ascending: false });
@@ -87,7 +87,13 @@
 
 <section class="w-11/12 flex flex-wrap mx-3">
 	{#each $docs as doc}
-		<DocBox title={doc.title} snapshotContent={doc.text} profile={doc.profile || {}} id={doc.id} />
+		<DocBox
+			title={doc.title}
+			commentsCount={doc.comments[0].count}
+			snapshotContent={doc.text}
+			profile={doc.profile || {}}
+			id={doc.id}
+		/>
 	{/each}
 </section>
 

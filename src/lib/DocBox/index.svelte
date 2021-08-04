@@ -1,12 +1,13 @@
 <script>
 	// import ArrowUp16 from 'carbon-icons-svelte/lib/ArrowUp16';
-	// import AddComment24 from 'carbon-icons-svelte/lib/AddComment24';
-	// import Vote from '../Vote/index.svelte';
+	import AddComment24 from 'carbon-icons-svelte/lib/AddComment24';
+	import Vote from '../Vote/index.svelte';
 
 	export let id;
 	export let title;
 	export let snapshotContent;
 	export let profile = {};
+	export let commentsCount = 0;
 </script>
 
 <a class="root" href="/doc/{id}">
@@ -20,22 +21,22 @@
 			<h3 class="overflow-ellipsis" {title}>
 				{title}
 			</h3>
-			<a class="text-gray-500 underline pb-2 text-sm" href="/profile/{profile.id}">
-				{profile.username}
-			</a>
-			<!-- <div class="w-full flex justify-between items-center">
-				<Vote value={1}>
+			<div class="w-full flex justify-between items-center p-1">
+				<!-- <Vote value={1}>
 					<slot:component slot="icon">
 						<ArrowUp16 />
 					</slot:component>
-				</Vote>
+				</Vote> -->
+				<a class="text-gray-500 underline text-sm" href="/profile/{profile.id}">
+					{profile.username}
+				</a>
 
-				<Vote value={1}>
+				<Vote value={commentsCount}>
 					<slot:component slot="icon">
 						<AddComment24 />
 					</slot:component>
 				</Vote>
-			</div> -->
+			</div>
 		</div>
 	</div>
 </a>

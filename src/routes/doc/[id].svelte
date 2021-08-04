@@ -17,6 +17,7 @@
 	import Box from '$lib/Box/index.svelte';
 	import { doc } from '../../store/docs';
 	import { profile } from '../../store/profile';
+	import { documentComments } from '../../store/documentComments';
 	import { supabase } from '../../functions/supabase';
 
 	export let docId;
@@ -95,6 +96,49 @@
 			isLoading: false,
 			...data
 		}));
+
+		await getComments();
+	}
+
+	async function getComments() {
+		const { data } = await supabase
+			.from('documentcomment')
+			.select(
+				`
+				id,
+				comment,
+				profile:profile_id ( id, username )
+			`
+			)
+			.eq('document_id', docId);
+
+		documentComments.set(data);
+		console.log(`getComments data`, data);
+	}
+
+	async function addComment(comment) {
+		// documentcomment
+		const documentComment = {
+			document_id: docId,
+			profile_id: $profile.id,
+			comment
+		};
+
+		const { data } = await supabase.from('documentcomment').insert(documentComment);
+
+		documentComments.update((_docs) => [
+			..._docs,
+			{
+				...data,
+				profile: $profile
+			}
+		]);
+	}
+
+	async function deleteComment(commentId) {
+		documentComments.update((comments) => comments.filter((comment) => comment.id !== commentId));
+
+		await supabase.from('documentcomment').delete().match({ id: commentId });
 	}
 
 	onDestroy(() => {
@@ -151,7 +195,12 @@
 		{/if}
 	</section>
 
-	<Comments />
+	<Comments
+		{addComment}
+		documentComments={$documentComments}
+		{deleteComment}
+		profileId={$profile.id}
+	/>
 </section>
 
 <style>
