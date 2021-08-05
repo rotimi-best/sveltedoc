@@ -108,7 +108,9 @@
 </main>
 
 <footer class="w-full">
-	<p>Built with love by <a target="_blank" href="https://twitter.com/">rotimi-best</a></p>
+	<p>
+		Built with love by <a target="_blank" href="https://twitter.com/rotimi_best">rotimi-best</a>
+	</p>
 </footer>
 
 <style>

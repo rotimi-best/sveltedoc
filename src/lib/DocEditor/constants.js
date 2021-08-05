@@ -13,5 +13,5 @@ export const settings = {
 		}
 	},
 	theme: 'snow',
-	placeholder: 'Write your story...'
+	placeholder: 'Share your thoughts with the world...'
 };

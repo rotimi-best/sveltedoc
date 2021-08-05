@@ -1,8 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
-	import AddAlt32 from 'carbon-icons-svelte/lib/AddAlt32';
 	import Avatar from '../Avatar/index.svelte';
-	import IconButton from '../IconButton/index.svelte';
 	import PrimaryButton from '../PrimaryButton/index.svelte';
 	import { user } from '../../store/user';
 	import { profile } from '../../store/profile';
@@ -46,9 +44,7 @@
 		<span class="flex-grow" />
 		{#if $user.isLoggedIn}
 			<li>
-				<IconButton onClick={handleAdd}>
-					<AddAlt32 />
-				</IconButton>
+				<PrimaryButton label="New Document" className="py-2 px-4" onClick={handleAdd} />
 			</li>
 		{/if}
 		<li>

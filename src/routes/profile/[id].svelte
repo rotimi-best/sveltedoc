@@ -47,7 +47,7 @@
 		docs = data;
 	}
 
-	async function getProfile() {
+	async function getProfile(profileId) {
 		loading = true;
 		// Get user profile
 
@@ -122,7 +122,7 @@
 
 	$: isOwner = $profile.id === profileId;
 	$: {
-		getProfile();
+		getProfile(profileId);
 	}
 </script>
 
@@ -148,7 +148,11 @@
 					inputClassName="rounded-md"
 				/>
 
-				<PrimaryButton label={loading ? 'Updating...' : 'Update profile'} onClick={updateProfile} />
+				<PrimaryButton
+					label={loading ? 'Updating...' : 'Update profile'}
+					onClick={updateProfile}
+					isDisabled={loading}
+				/>
 			{:else}
 				<h3 class="text-xl">{currentProfile.username}</h3>
 			{/if}

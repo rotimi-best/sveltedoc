@@ -3,15 +3,17 @@
 </script>
 
 <script>
-	import { SyncLoader } from 'svelte-loading-spinners';
+	import { SyncLoader, Chasing } from 'svelte-loading-spinners';
 	import { onMount } from 'svelte';
 	import DocBox from '$lib/DocBox/index.svelte';
+	import Box from '$lib/Box/index.svelte';
 	import { docs } from '../store/docs';
 	import { supabase } from '../functions/supabase';
 
 	let query = '';
 	let timeoutId;
 	let isSearching = false;
+	let loading = false;
 
 	function onTitleChange(e) {
 		isSearching = true;
@@ -49,6 +51,7 @@
 	}
 
 	onMount(async () => {
+		loading = true;
 		const { data, error } = await supabase
 			.from('document')
 			.select(
@@ -60,12 +63,13 @@
 			comments:documentcomment (count)
 		`
 			)
-			.order('updated_at', { ascending: true });
+			.order('updated_at', { ascending: false });
 
 		if (error) {
 			return alert(error.message);
 		}
 		docs.set(data);
+		loading = false;
 	});
 </script>
 
@@ -86,17 +90,23 @@
 	{/if}
 </section>
 
-<section class="w-11/12 flex flex-wrap m-auto">
-	{#each $docs as doc}
-		<DocBox
-			title={doc.title}
-			commentsCount={doc.comments[0] ? doc.comments[0].count : null}
-			snapshotContent={doc.text}
-			profile={doc.profile || {}}
-			id={doc.id}
-		/>
-	{/each}
-</section>
+{#if loading}
+	<Box>
+		<Chasing size="60" color="#ff3e00" unit="px" duration="1s" />
+	</Box>
+{:else}
+	<section class="w-11/12 flex flex-wrap m-auto mb-10">
+		{#each $docs as doc}
+			<DocBox
+				title={doc.title}
+				commentsCount={doc.comments[0] ? doc.comments[0].count : null}
+				snapshotContent={doc.text}
+				profile={doc.profile || {}}
+				id={doc.id}
+			/>
+		{/each}
+	</section>
+{/if}
 
 <style>
 	.search {

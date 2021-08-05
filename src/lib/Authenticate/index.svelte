@@ -53,28 +53,31 @@
 	<title>Join SvelteDoc</title>
 </svelte:head>
 
-<Modal modalHeading="Create an account" onClose={handleClose} bind:open={$user.openAuthModal}>
+<Modal modalHeading="SvelteDoc" onClose={handleClose} bind:open={$user.openAuthModal}>
 	<form
 		on:submit|preventDefault={handleSubmit}
 		class="flex items-center justify-between flex-col w-full p-6"
 	>
 		<img src="/logo_192.png" alt="SvelteDoc logo" height="70" width="70" data-atf="1" />
-		<h4 class="text-lg m-0 mt-3">SvelteDoc</h4>
+		<h4 class="text-lg m-0 mt-3">Login or Create an account</h4>
 		<div class="my-4 w-full">
 			{#if success}
-				<p class="text-xl text-center">Please check your email to signin</p>
+				<p class="w-80 text-xl text-center">
+					A link has been sent to your email. Please check both your <strong>spam</strong> and your
+					<strong>inbox</strong>.
+				</p>
 			{:else}
 				<TextField
-					label="Your Email"
+					label="Email address"
 					bind:value={email}
 					type="email"
 					autoFocus={true}
-					placeholder="Enter your email"
+					placeholder="you@domain.com"
 					inputClassName="rounded-md w-full px-2 py-4"
 					isDisabled={loading}
 					errorMessage={errors.email}
 				/>
-				<p class="py-3 text-sm">A magic link will be sent to your email, please open the link</p>
+				<p class="py-3 text-md">A magic link will be sent to your email, please open the link</p>
 			{/if}
 		</div>
 

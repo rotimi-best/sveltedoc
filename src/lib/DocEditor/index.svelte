@@ -5,9 +5,20 @@
 	export let autoSave;
 	export let content;
 	export let disable;
+	export let docId;
 
 	let quill = null;
 	let container = null;
+
+	function resetContent(docId) {
+		if (quill && quill.setText) {
+			if (content) {
+				quill.setContents(JSON.parse(content));
+			} else {
+				quill.setText('');
+			}
+		}
+	}
 
 	onMount(async () => {
 		const { default: Quill } = await import('quill');
@@ -35,6 +46,8 @@
 			}
 		}
 	}
+
+	$: resetContent(docId);
 </script>
 
 <div class="editor-container p-2 w-full">
