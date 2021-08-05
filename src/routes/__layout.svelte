@@ -112,10 +112,6 @@
 </footer>
 
 <style>
-	main {
-		margin-bottom: 60px;
-	}
-
 	footer {
 		position: fixed;
 		bottom: 0;
@@ -124,7 +120,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		padding: 20px;
+		padding: 5px;
 		background: #fff;
 	}
 
@@ -138,7 +134,7 @@
 
 	@media (min-width: 480px) {
 		footer {
-			padding: 20px 0;
+			padding: 5px 0;
 		}
 	}
 </style>

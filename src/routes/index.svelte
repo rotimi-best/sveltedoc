@@ -31,7 +31,8 @@
 				id,
 				title,
 				text,
-				profile:profile_id ( id, avatar_url, username )
+				profile:profile_id ( id, avatar_url, username ),
+				comments:documentcomment (count)
 			`
 				)
 				.or(`title.ilike.%${query}%`);
@@ -59,7 +60,7 @@
 			comments:documentcomment (count)
 		`
 			)
-			.order('updated_at', { ascending: false });
+			.order('updated_at', { ascending: true });
 
 		if (error) {
 			return alert(error.message);
@@ -85,11 +86,11 @@
 	{/if}
 </section>
 
-<section class="w-11/12 flex flex-wrap mx-3">
+<section class="w-11/12 flex flex-wrap m-auto">
 	{#each $docs as doc}
 		<DocBox
 			title={doc.title}
-			commentsCount={doc.comments[0].count}
+			commentsCount={doc.comments[0] ? doc.comments[0].count : null}
 			snapshotContent={doc.text}
 			profile={doc.profile || {}}
 			id={doc.id}

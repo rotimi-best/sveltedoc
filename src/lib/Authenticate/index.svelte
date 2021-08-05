@@ -28,7 +28,7 @@
 			);
 			if (error) throw error;
 			success = true;
-			email = {};
+			errors = {};
 		} catch (error) {
 			errors = {
 				email: error.error_description || error.message
@@ -43,6 +43,9 @@
 			..._user,
 			openAuthModal: false
 		}));
+		success = false;
+		email = null;
+		loading = false;
 	}
 </script>
 

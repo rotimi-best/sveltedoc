@@ -23,7 +23,7 @@
 					class="rounded h-10 w-10 inline-block mx-auto mr-2"
 					data-atf="1"
 				/>
-				<div>
+				<div class="hidden lg:block">
 					<p>SvelteDoc</p>
 					<span class="font-light">Public only note taking app</span>
 				</div>
@@ -76,6 +76,7 @@
 		position: sticky;
 		top: 0;
 		background: #fff;
+		z-index: 1;
 	}
 	ul {
 		margin: 0 auto;
@@ -120,9 +121,6 @@
 	@media only screen and (max-width: 1002px) {
 		ul {
 			align-items: center;
-		}
-		li a {
-			display: none;
 		}
 	}
 </style>

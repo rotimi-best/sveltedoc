@@ -44,6 +44,6 @@
 <style>
 	.editor-container {
 		max-width: 800px;
-		height: 70vh;
+		height: 80vh;
 	}
 </style>

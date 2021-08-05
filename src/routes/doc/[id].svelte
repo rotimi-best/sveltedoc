@@ -10,7 +10,7 @@
 
 <script>
 	import { goto } from '$app/navigation';
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { BarLoader, Chasing } from 'svelte-loading-spinners';
 	import DocEditor from '$lib/DocEditor/index.svelte';
 	import Comments from '$lib/Comments/index.svelte';
@@ -24,6 +24,7 @@
 
 	let timeoutId;
 	let isOwner = false;
+	let lastInsertedCommentId;
 
 	function autoSave({ title = $doc.title, html = $doc.html, text = $doc.text }) {
 		if (!title) {
@@ -86,7 +87,7 @@
 			.eq('id', docId)
 			.single();
 		if (error || !data) {
-			alert(error.message || `Couldn't create document`);
+			console.error(error.message || `Couldn't create document`);
 			return;
 		}
 
@@ -113,33 +114,70 @@
 			.eq('document_id', docId);
 
 		documentComments.set(data);
-		console.log(`getComments data`, data);
 	}
 
 	async function addComment(comment) {
-		// documentcomment
 		const documentComment = {
 			document_id: docId,
 			profile_id: $profile.id,
 			comment
 		};
 
-		const { data } = await supabase.from('documentcomment').insert(documentComment);
+		await supabase.from('documentcomment').insert(documentComment);
+		// const [insertedComment] = data;
 
-		documentComments.update((_docs) => [
-			..._docs,
+		// lastInsertedCommentId = insertedComment.id;
+
+		// documentComments.update((docs) => [
+		// 	...docs,
+		// 	{
+		// 		...insertedComment,
+		// 		profile: $profile
+		// 	}
+		// ]);
+	}
+
+	async function deleteComment(commentId) {
+		await supabase.from('documentcomment').delete().match({ id: commentId });
+	}
+
+	async function handleRecordInserted(payload) {
+		const { new: insertedComment } = payload;
+
+		const { data } = await supabase
+			.from('profile')
+			.select('id, username')
+			.eq('id', insertedComment.profile_id)
+			.single();
+
+		documentComments.update((docs) => [
+			...docs,
 			{
-				...data,
-				profile: $profile
+				...insertedComment,
+				profile: data
 			}
 		]);
 	}
 
-	async function deleteComment(commentId) {
-		documentComments.update((comments) => comments.filter((comment) => comment.id !== commentId));
-
-		await supabase.from('documentcomment').delete().match({ id: commentId });
+	function handleRecordDeleted(payload) {
+		console.log('DELETE Change received!', payload);
+		documentComments.update((comments) =>
+			comments.filter((comment) => comment.id !== payload.old.id)
+		);
 	}
+
+	onMount(() => {
+		const mySubscription = supabase
+			.from('documentcomment')
+			.on('INSERT', handleRecordInserted)
+			.on('DELETE', handleRecordDeleted)
+			.subscribe();
+		console.log(`onMount`, mySubscription);
+
+		return () => {
+			supabase.removeSubscription(mySubscription);
+		};
+	});
 
 	onDestroy(() => {
 		$doc.isLoading = true;
@@ -147,7 +185,6 @@
 
 	$: {
 		isOwner = $doc.profile ? $doc.profile.id === $profile.id : false;
-		console.log(`isOwner`, isOwner);
 	}
 
 	$: {
@@ -200,11 +237,13 @@
 		documentComments={$documentComments}
 		{deleteComment}
 		profileId={$profile.id}
+		profileIdOfDocOwner={$doc.profile.id}
 	/>
 </section>
 
 <style>
 	.root {
-		width: 800px;
+		max-width: 800px;
+		width: 95%;
 	}
 </style>
