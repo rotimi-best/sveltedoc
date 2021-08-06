@@ -23,7 +23,7 @@ I studied computer science in russian language and as a foreign student it was d
   <img src="https://user-images.githubusercontent.com/31730715/128576003-a2434728-752e-454e-aefc-954a028731e8.png" height="200">
 </p>
 
-This was so time consuming and I don't want anyone to have to go through this. My idea was what if every note taking by all students in the lesson is made public to everyone? I have been thinking about this project for a long time now and I felt now is the best time to build the MVP.
+This was so time consuming and I don't want anyone to have to go through this. My idea was what if every note taken by all students in the lesson is made public to everyone? I have been thinking about this project for a long time now and I felt now is the best time to build the MVP.
 
 ## Demo
 https://user-images.githubusercontent.com/31730715/128574952-44da5ad0-4c14-4c26-b0ed-ec0cb03af92e.mp4
