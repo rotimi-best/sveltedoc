@@ -66,6 +66,7 @@
 		if ($doc.title && $doc.title.length) {
 			return;
 		}
+
 		$doc.title = 'Untitle document';
 
 		autoSave({ title: $doc.title });
@@ -86,23 +87,17 @@
 			text: null,
 			profile: {}
 		}));
+
 		goto(`/doc/${data[0].id}`);
 	}
 
 	async function getDocument() {
 		const { data, error } = await supabase
 			.from('document')
-			.select(
-				`
-			id,
-			title,
-			html,
-			text,
-			profile:profile_id ( id, username )
-		`
-			)
+			.select(`id,title,html,text,profile:profile_id (id, username)`)
 			.eq('id', docId)
 			.single();
+
 		if (error || !data) {
 			console.error(error.message || `Couldn't create document`);
 			return;
@@ -121,13 +116,7 @@
 	async function getComments() {
 		const { data } = await supabase
 			.from('documentcomment')
-			.select(
-				`
-				id,
-				comment,
-				profile:profile_id ( id, username )
-			`
-			)
+			.select(`id,comment,profile:profile_id (id,username)`)
 			.eq('document_id', docId);
 
 		documentComments.set(data);
@@ -173,6 +162,7 @@
 
 	async function handleDelete() {
 		await supabase.from('document').delete().match({ id: docId });
+
 		goto(`/profile/${$profile.id}`);
 	}
 
@@ -234,10 +224,13 @@
 						{$doc.profile.username}
 					</a>
 				</h6>
-				<span class=" mx-3">|</span>
-				<button on:click={handleDelete} class="text-red-500 text-sm flex items-center">
-					<Delete16 /> <span class="ml-2">Delete document</span>
-				</button>
+
+				{#if isOwner}
+					<span class=" mx-3">|</span>
+					<button on:click={handleDelete} class="text-red-500 text-sm flex items-center">
+						<Delete16 /> <span class="ml-2">Delete document</span>
+					</button>
+				{/if}
 			</div>
 			<DocEditor docId={$doc.id} {autoSave} content={$doc.html} disable={!isOwner} />
 		{/if}

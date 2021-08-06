@@ -74,7 +74,6 @@
 			currentProfile = profileData;
 			await getUserDocs();
 		}
-		console.log(`currentProfile`, currentProfile);
 
 		loading = false;
 	}

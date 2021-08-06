@@ -55,20 +55,17 @@
 		const { data, error } = await supabase
 			.from('document')
 			.select(
-				`
-			id,
-			title,
-			text,
-			profile:profile_id ( id, avatar_url, username ),
-			comments:documentcomment (count)
-		`
+				`id, title, text, profile:profile_id(id, avatar_url,username), comments:documentcomment(count)`
 			)
+			.limit(25)
 			.order('updated_at', { ascending: false });
 
 		if (error) {
 			return alert(error.message);
 		}
+
 		docs.set(data);
+
 		loading = false;
 	});
 </script>
