@@ -112,7 +112,7 @@
 		<Chasing size="60" color="#ff3e00" unit="px" duration="1s" />
 	</Box>
 {:else}
-	<section class="w-11/12 flex flex-wrap m-auto mb-10">
+	<section class="w-11/12 flex flex-wrap m-auto mb-10 justify-between lg:justify-equal">
 		{#each $docs as doc}
 			<DocBox
 				title={doc.title}

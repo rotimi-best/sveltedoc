@@ -42,7 +42,7 @@
 	});
 </script>
 
-<section class="root relative shadow-xl h-full rounded-md w-80 border">
+<section class="root relative shadow-xl h-full rounded-md m-2 lg:w-80 border">
 	<h2 class="font-bold w-full border border-t-0 border-l-0 border-r-0 border-b m-0 pl-4 py-4">
 		Comments {documentComments.length > 0 ? `(${documentComments.length})` : ''}
 	</h2>
@@ -93,11 +93,20 @@
 </section>
 
 <style>
+	.root {
+		max-width: 800px;
+	}
 	.comments {
 		height: 75vh;
 	}
 
 	.comment:hover .delete {
 		display: block;
+	}
+
+	@media only screen and (max-width: 1024px) {
+		.comments {
+			height: 400px;
+		}
 	}
 </style>
