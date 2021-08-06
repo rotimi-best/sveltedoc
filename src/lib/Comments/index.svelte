@@ -106,6 +106,9 @@
 	}
 
 	@media only screen and (max-width: 1024px) {
+		.root {
+			width: 95%;
+		}
 		.comments {
 			height: 400px;
 		}

@@ -194,7 +194,7 @@
 	<title>{$doc.title || 'New Document'}</title>
 </svelte:head>
 
-<section class="flex flex-col lg:flex-row justify-center mt-2">
+<section class="flex flex-col lg:flex-row justify-center items-center mt-2">
 	<section class="root flex justify-center flex-col m-2">
 		{#if $doc.isLoading}
 			<Box>

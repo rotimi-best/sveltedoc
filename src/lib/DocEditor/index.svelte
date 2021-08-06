@@ -56,7 +56,14 @@
 
 <style>
 	.editor-container {
-		max-width: 800px;
+		width: 800px;
 		height: 80vh;
+	}
+
+	@media only screen and (max-width: 1024px) {
+		.editor-container {
+			width: unset;
+			max-width: 800px;
+		}
 	}
 </style>
