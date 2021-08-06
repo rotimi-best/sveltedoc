@@ -95,6 +95,7 @@
 <style>
 	.root {
 		max-width: 800px;
+		margin-bottom: 40px;
 	}
 	.comments {
 		height: 75vh;
