@@ -26,6 +26,7 @@
 	let currentProfile = {};
 	let isOwner = false;
 	let docs = [];
+	let initialValueOfUserName;
 
 	async function getUserDocs() {
 		const { data, error } = await supabase
@@ -67,11 +68,15 @@
 			// Profile created, go to profile page
 			if (!error && data) {
 				currentProfile = data;
+				initialValueOfUserName = currentProfile.username;
+
 				await getUserDocs();
 			}
 		} else if (profileData) {
 			// Profile exists, go to profile page
 			currentProfile = profileData;
+			initialValueOfUserName = currentProfile.username;
+
 			await getUserDocs();
 		}
 
@@ -102,6 +107,8 @@
 			loading = false;
 		} finally {
 			loading = false;
+
+			initialValueOfUserName = currentProfile.username;
 		}
 	}
 
@@ -129,7 +136,7 @@
 	<title>Profile of {currentProfile.username}</title>
 </svelte:head>
 
-<section class="w-11/12 m-3 flex items-start">
+<section class="w-11/12 mt-3 m-auto flex items-start">
 	{#if currentProfile.id}
 		<div class="w-1/4 flex items-center flex-col">
 			<img
@@ -147,11 +154,13 @@
 					inputClassName="rounded-md"
 				/>
 
-				<PrimaryButton
-					label={loading ? 'Updating...' : 'Update profile'}
-					onClick={updateProfile}
-					isDisabled={loading}
-				/>
+				{#if initialValueOfUserName !== currentProfile.username}
+					<PrimaryButton
+						label={loading ? 'Updating...' : 'Update profile'}
+						onClick={updateProfile}
+						isDisabled={loading}
+					/>
+				{/if}
 			{:else}
 				<h3 class="text-xl">{currentProfile.username}</h3>
 			{/if}

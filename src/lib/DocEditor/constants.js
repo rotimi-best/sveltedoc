@@ -2,6 +2,7 @@ export const settings = {
 	modules: {
 		toolbar: {
 			modules: {
+				syntax: true,
 				toolbar: [
 					[{ header: [1, 2, 3, false] }],
 					['bold', 'italic', 'underline', 'strike'],

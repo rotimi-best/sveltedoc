@@ -44,7 +44,12 @@
 		<span class="flex-grow" />
 		{#if $user.isLoggedIn}
 			<li>
-				<PrimaryButton label="New Document" className="py-2 px-4" onClick={handleAdd} />
+				<PrimaryButton
+					label="New Document"
+					disablePadding={true}
+					className="py-2 px-4"
+					onClick={handleAdd}
+				/>
 			</li>
 		{/if}
 		<li>

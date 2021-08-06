@@ -248,6 +248,6 @@
 <style>
 	.root {
 		max-width: 800px;
-		width: 95%;
+		width: 100%;
 	}
 </style>

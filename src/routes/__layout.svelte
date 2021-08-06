@@ -5,7 +5,9 @@
 	import { supabase } from '../functions/supabase';
 	import { user } from '../store/user';
 	import { profile } from '../store/profile';
-	import '../app.css';
+	import highlight from 'highlight.js/lib/common';
+
+	import '../app.postcss';
 
 	async function updateToken(refreshToken) {
 		console.log('updating refresh token');
@@ -97,6 +99,7 @@
 
 			setUserInStore(localStorageData);
 		}, 1000);
+		window.hljs = highlight;
 	});
 </script>
 

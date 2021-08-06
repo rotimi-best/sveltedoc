@@ -4,7 +4,7 @@
 
 <script>
 	import { SyncLoader, Chasing } from 'svelte-loading-spinners';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import DocBox from '$lib/DocBox/index.svelte';
 	import Box from '$lib/Box/index.svelte';
 	import { docs } from '../store/docs';
@@ -14,6 +14,7 @@
 	let timeoutId;
 	let isSearching = false;
 	let loading = false;
+	let commentsSubscription;
 
 	function onTitleChange(e) {
 		isSearching = true;
@@ -29,13 +30,7 @@
 			const { data, error } = await supabase
 				.from('document')
 				.select(
-					`
-				id,
-				title,
-				text,
-				profile:profile_id ( id, avatar_url, username ),
-				comments:documentcomment (count)
-			`
+					`id, title, text, profile:profile_id(id, avatar_url, username), comments:documentcomment(count)`
 				)
 				.or(`title.ilike.%${query}%`);
 			// Can't search filter by joined table: https://github.com/supabase/supabase/discussions/2234#discussioncomment-975839
@@ -47,7 +42,7 @@
 
 			isSearching = false;
 			docs.set(data);
-		}, 1500);
+		}, 500);
 	}
 
 	onMount(async () => {
@@ -67,6 +62,31 @@
 		docs.set(data);
 
 		loading = false;
+
+		commentsSubscription = supabase
+			.from('documentcomment')
+			.on('INSERT', (payload) => {
+				const { new: newComment } = payload;
+				const { document_id } = newComment;
+
+				docs.update((_docs) =>
+					_docs.map((_doc) => {
+						if (_doc.id === document_id) {
+							if (_doc.comments[0] && _doc.comments[0].count) {
+								_doc.comments[0].count++;
+							} else {
+								_doc.comments = [{ count: 1 }];
+							}
+						}
+						return _doc;
+					})
+				);
+			})
+			.subscribe();
+	});
+
+	onDestroy(() => {
+		supabase.removeSubscription(commentsSubscription);
 	});
 </script>
 

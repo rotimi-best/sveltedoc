@@ -1,6 +1,7 @@
 <script>
 	import ArrowUp16 from 'carbon-icons-svelte/lib/ArrowUp16';
-	import Chip from '../Chip/index.svelte';
+	// import Chip from '../Chip/index.svelte';
+	import { slide } from 'svelte/transition';
 
 	export let value = 0;
 
@@ -16,7 +17,7 @@
 		<ArrowUp16 />
 	{/if}
 	<!-- <Chip {value} /> -->
-	<span class="ml-2 text-gray-500">{value}</span>
+	<span class="ml-2 text-gray-500" transition:slide>{value}</span>
 </div>
 
 <style>
